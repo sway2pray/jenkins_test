@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "gmta-analytics-mock"
         VERSION = "1.0.${BUILD_NUMBER}"
+        PATH = "/var/lib/jenkins/.local/bin:$PATH"
     }
 
     stages {
