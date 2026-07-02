@@ -1,0 +1,10 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Chart.Name }}-route
+spec:
+  to:
+    kind: Service
+    name: {{ .Chart.Name }}-svc
+  port:
+    targetPort: {{ .Values.service.targetPort }}

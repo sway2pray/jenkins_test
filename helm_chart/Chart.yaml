@@ -1,0 +1,5 @@
+apiVersion: v2
+name: gmta-analytics
+description: Helm chart for GMTA Analytics API 
+version: 0.1.0
+appVersion: "1.0.0"

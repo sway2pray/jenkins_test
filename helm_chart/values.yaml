@@ -1,0 +1,9 @@
+replicaCount: 1
+
+image:
+  repository: gmta-analytics
+  tag: "latest"
+
+service:
+  targetPort: 8888
+
