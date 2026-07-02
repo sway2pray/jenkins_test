@@ -7,4 +7,8 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY --chown=appuser:appgroup . .
+
+ENV APP_HOST=0.0.0.0
+ENV APP_PORT=8888
+
 CMD ["python", "app.py"]
