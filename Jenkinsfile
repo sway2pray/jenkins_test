@@ -66,7 +66,7 @@ pipeline {
     post {
         always {
             echo "Очистка временных файлов (Workspace)..."
-            cleanWs()
+            deleteDir()
         }
         success {
             echo "Пайплайн успешно завершен!"
