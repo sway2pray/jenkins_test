@@ -79,6 +79,7 @@ pipeline {
                   --kube-apiserver https://api.crc.testing:6443 \
                   --kube-token $K8S_TOKEN \
                   --namespace analytics \
+                  --kube-insecure-skip-tls-verify \
                   --set image.repository=image-registry.openshift-image-registry.svc:5000/analytics/gmta-analytics \
                   --set image.tag=latest
                 '''
