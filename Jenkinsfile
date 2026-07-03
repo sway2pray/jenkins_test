@@ -52,9 +52,9 @@ pipeline {
             }
         }
 
-        stage('Register in SberCTL (REST API)') {
+        stage('Register  (REST API)') {
             steps {
-                echo "Уведомление внутренней системы банка через REST API..."
+                echo "Уведомление  через REST API..."
                 sh '''
                 curl -X POST http://httpbin.org/post \
                      -H "Content-Type: application/json" \
@@ -62,7 +62,27 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy to OpenShift') {
+            environment {
+                K8S_TOKEN = credentials('openshift-token')
+            }
+            steps {
+                echo "Запускаем деплой через Helm в кластер OpenShift..."
+                
+                sh '''
+                helm upgrade --install analytics-release ./helm-chart \
+                  --kube-apiserver https://api.crc.testing:6443 \
+                  --kube-token $K8S_TOKEN \
+                  --namespace analytics \
+                  --kube-insecure-skip-tls-verify \
+                  --set image.tag=latest
+                '''
+            }
+        }
     }
+
+    
 
     post {
         always {
