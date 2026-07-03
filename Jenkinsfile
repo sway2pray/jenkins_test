@@ -31,10 +31,16 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build & Push Docker Image') {
+            environment {
+                K8S_TOKEN = credentials('openshift-token')
+                REGISTRY = "default-route-openshift-image-registry.apps-crc.testing"
+                IMAGE_NAME = "${REGISTRY}/analytics/gmta-analytics:latest"
+            }
             steps {
-                echo "Сборка образа ${DOCKER_IMAGE}:${VERSION}..."
-                sh "docker build -t ${DOCKER_IMAGE}:${VERSION} ."
+                sh 'docker build -t $IMAGE_NAME .'
+                sh 'docker login -u jenkins-deployer -p $K8S_TOKEN $REGISTRY'
+                sh 'docker push $IMAGE_NAME'
             }
         }
 
@@ -68,21 +74,18 @@ pipeline {
                 K8S_TOKEN = credentials('openshift-token')
             }
             steps {
-                echo "Запускаем деплой через Helm в кластер OpenShift..."
-                
                 sh '''
                 helm upgrade --install analytics-release ./helm-chart \
                   --kube-apiserver https://api.crc.testing:6443 \
                   --kube-token $K8S_TOKEN \
                   --namespace analytics \
                   --kube-insecure-skip-tls-verify \
+                  --set image.repository=image-registry.openshift-image-registry.svc:5000/analytics/gmta-analytics \
                   --set image.tag=latest
                 '''
             }
         }
     }
-
-    
 
     post {
         always {
